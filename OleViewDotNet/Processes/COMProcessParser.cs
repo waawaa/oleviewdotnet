@@ -130,7 +130,13 @@ public static class COMProcessParser
                 {
                     if (ipid_set.Count == 0 || ipid_set.Contains(ipid_entry.Ipid))
                     {
-                        entries.Add(new COMIPIDEntry(ipid_entry, Guid.Empty, process, resolver, config, registry));
+                        try
+                        {
+                            entries.Add(new COMIPIDEntry(ipid_entry, Guid.Empty, process, resolver, config, registry));
+                        }
+                        catch (NtException)
+                        {
+                        }
                     }
                 }
             }
@@ -161,12 +167,17 @@ public static class COMProcessParser
             return new List<COMIPIDEntry>();
         }
 
+        PageAllocator palloc = new(process, ipid_table);
         if (process.Is64Bit)
         {
+            if (palloc.EntrySize >= Marshal.SizeOf(typeof(IPIDEntryNative26100)))
+                return ParseIPIDEntries<IPIDEntryNative26100>(process, ipid_table, resolver, config, registry, ipid_set);
             return ParseIPIDEntries<IPIDEntryNative>(process, ipid_table, resolver, config, registry, ipid_set);
         }
         else
         {
+            if (palloc.EntrySize >= Marshal.SizeOf(typeof(IPIDEntryNative26100_32)))
+                return ParseIPIDEntries<IPIDEntryNative26100_32>(process, ipid_table, resolver, config, registry, ipid_set);
             return ParseIPIDEntries<IPIDEntryNative32>(process, ipid_table, resolver, config, registry, ipid_set);
         }
     }

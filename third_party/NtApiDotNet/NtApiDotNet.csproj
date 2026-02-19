@@ -11,7 +11,12 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <BaseOutputPath>..\bin</BaseOutputPath>
         <Configurations>Debug;Release</Configurations>
+        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
+    </ItemGroup>
 
     <ItemGroup>
         <Compile Include="..\sandbox-attacksurface-analysis-tools\NtApiDotNet\**\*.cs" />

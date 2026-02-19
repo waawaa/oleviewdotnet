@@ -49,7 +49,12 @@ internal class COMDualStringArray
             }
         }
 
-        new_reader.BaseStream.Position = sec_offset * 2;
+        long sec_byte_offset = sec_offset * 2L;
+        if (sec_byte_offset < 0 || sec_byte_offset >= new_reader.BaseStream.Length)
+        {
+            return;
+        }
+        new_reader.BaseStream.Position = sec_byte_offset;
         COMSecurityBinding sec = new(new_reader);
         while (sec.AuthnSvc != 0)
         {
@@ -58,15 +63,23 @@ internal class COMDualStringArray
         }
     }
 
+    private const int MaxDualStringArrayEntries = 4096;
+
     public COMDualStringArray(IntPtr ptr, NtProcess process) : this()
     {
         int num_entries = process.ReadMemory<ushort>(ptr.ToInt64());
-        int sec_offset = process.ReadMemory<ushort>(ptr.ToInt64() + 2);
-        if (num_entries > 0)
+        if (num_entries <= 0 || num_entries > MaxDualStringArrayEntries)
         {
-            MemoryStream stm = new(process.ReadMemory(ptr.ToInt64() + 4, num_entries * 2));
-            ReadEntries(new BinaryReader(stm), sec_offset);
+            return;
         }
+        int sec_offset = process.ReadMemory<ushort>(ptr.ToInt64() + 2);
+        byte[] data = process.ReadMemory(ptr.ToInt64() + 4, num_entries * 2);
+        if (data.Length < num_entries * 2)
+        {
+            return;
+        }
+        MemoryStream stm = new(data);
+        ReadEntries(new BinaryReader(stm), sec_offset);
     }
 
     internal COMDualStringArray(BinaryReader reader) : this()

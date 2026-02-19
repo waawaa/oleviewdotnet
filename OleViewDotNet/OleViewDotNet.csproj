@@ -16,11 +16,12 @@
         <Version>1.16</Version>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-        <Copyright>Copyright © James Forshaw 2014-2024</Copyright>
+        <Copyright>Copyright James Forshaw 2014-2024</Copyright>
         <AssemblyVersion>1.0.0.0</AssemblyVersion>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <BaseOutputPath>..\bin</BaseOutputPath>
         <Configurations>Debug;Release</Configurations>
+        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
 
     <ItemGroup>
@@ -32,6 +33,7 @@
         <PackageReference Include="DockPanelSuite.ThemeVS2005" Version="3.1.0" />
         <PackageReference Include="ICSharpCode.TextEditor" Version="3.2.1.6466" />
         <PackageReference Include="NDesk.Options" Version="0.2.1" />
+        <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
